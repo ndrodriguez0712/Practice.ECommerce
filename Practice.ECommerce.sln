@@ -3,9 +3,42 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Clients", "01. Clients", "{B8927866-4CD7-4130-83B5-709C3BF4A66B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Services", "02. Services", "{E012C6D0-CEEA-4617-A631-A31B99D8A257}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Services", "03. Services", "{8BF6AD9F-E76A-470C-A847-2725CA3913BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Identity", "01. Identity", "{8F1F77DE-1E77-4614-B629-2796ADE46FBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Catalog", "02. Catalog", "{EADF3602-5F86-4860-BD92-343FFDECA820}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Customer", "03. Customer", "{74CE6593-784E-4E85-A30E-D3FADCF636E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Order", "04. Order", "{D83D363E-0339-4882-9C31-4DD5827B5638}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Api", "src\Services\Catalog\Catalog.Api\Catalog.Api.csproj", "{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8F1F77DE-1E77-4614-B629-2796ADE46FBE} = {8BF6AD9F-E76A-470C-A847-2725CA3913BD}
+		{EADF3602-5F86-4860-BD92-343FFDECA820} = {8BF6AD9F-E76A-470C-A847-2725CA3913BD}
+		{74CE6593-784E-4E85-A30E-D3FADCF636E4} = {8BF6AD9F-E76A-470C-A847-2725CA3913BD}
+		{D83D363E-0339-4882-9C31-4DD5827B5638} = {8BF6AD9F-E76A-470C-A847-2725CA3913BD}
+		{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B} = {EADF3602-5F86-4860-BD92-343FFDECA820}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF465431-5009-43D8-B4C1-6CF6904A6630}
