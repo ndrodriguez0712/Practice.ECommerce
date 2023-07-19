@@ -34,14 +34,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage();    
 }
-else
-{
-    var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
-    loggerFactory.AddSyslog(config.GetValue<string>("Papertrail:host"),
-                            config.GetValue<int>("Papertrail:port"));
-}
+
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+loggerFactory.AddSyslog(config.GetValue<string>("Papertrail:host"), config.GetValue<int>("Papertrail:port"));
 
 app.UseAuthorization();
 
