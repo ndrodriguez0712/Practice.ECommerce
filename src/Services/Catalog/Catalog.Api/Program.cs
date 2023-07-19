@@ -3,7 +3,10 @@ using Catalog.Service.EventHandlers.Commands;
 using Catalog.Service.Queries;
 using Catalog.Service.Queries.Interfaces;
 using Common.Logging;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,10 @@ builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Produc
 
 builder.Services.AddTransient<IProductQueryService, ProductQueryService>();
 
+builder.Services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy())
+                .AddDbContextCheck<ApplicationDbContext>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,6 +48,16 @@ var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 loggerFactory.AddSyslog(config.GetValue<string>("Papertrail:host"), config.GetValue<int>("Papertrail:port"));
 
 app.UseAuthorization();
+
+app.UseRouting()
+   .UseEndpoints(config =>
+    {
+        config.MapHealthChecks("/healthz", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+    });
 
 app.MapControllers();
 
