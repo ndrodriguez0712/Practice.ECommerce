@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Customer", "03. Custome
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Order", "04. Order", "{D83D363E-0339-4882-9C31-4DD5827B5638}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Api", "src\Services\Catalog\Catalog.Api\Catalog.Api.csproj", "{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Api", "src\Services\Catalog\Catalog.Api\Catalog.Api.csproj", "{8A67BB83-EC7B-40FD-9BF4-9D62B9868C5B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Common", "04. Common", "{20256765-2EC8-4141-84FE-52234D50EB1D}"
 EndProject
@@ -33,23 +33,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Persistence", "03. Pers
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05. Common", "05. Common", "{6A34520D-81C8-4D35-A34A-E2B25FEF1184}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Service.EventHandlers", "src\Services\Catalog\Catalog.Service.EventHandlers\Catalog.Service.EventHandlers.csproj", "{213BA73D-C460-41A7-9508-09A0D1EE3A7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Service.EventHandlers", "src\Services\Catalog\Catalog.Service.EventHandlers\Catalog.Service.EventHandlers.csproj", "{213BA73D-C460-41A7-9508-09A0D1EE3A7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Service.Queries", "src\Services\Catalog\Catalog.Service.Queries\Catalog.Service.Queries.csproj", "{B5AD2EF1-C723-42E5-A7CF-29400D7C859F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Service.Queries", "src\Services\Catalog\Catalog.Service.Queries\Catalog.Service.Queries.csproj", "{B5AD2EF1-C723-42E5-A7CF-29400D7C859F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Persistence.Database", "src\Services\Catalog\Catalog.Persistence.Database\Catalog.Persistence.Database.csproj", "{23D62C23-7097-4EC9-A4B0-DA0F043BA7F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Persistence.Database", "src\Services\Catalog\Catalog.Persistence.Database\Catalog.Persistence.Database.csproj", "{23D62C23-7097-4EC9-A4B0-DA0F043BA7F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Domain", "src\Services\Catalog\Catalog.Domain\Catalog.Domain.csproj", "{557A6B85-D46E-4496-8ACB-B1AA9F0548FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Domain", "src\Services\Catalog\Catalog.Domain\Catalog.Domain.csproj", "{557A6B85-D46E-4496-8ACB-B1AA9F0548FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Common", "src\Services\Catalog\Catalog.Common\Catalog.Common.csproj", "{E012FE93-30A0-4C8F-B9EB-8DFF169D50C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Common", "src\Services\Catalog\Catalog.Common\Catalog.Common.csproj", "{E012FE93-30A0-4C8F-B9EB-8DFF169D50C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Logging", "src\Common\Common.Logging\Common.Logging.csproj", "{3E0F4BAF-DCB9-4C0B-A07E-089D64D36FD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "src\Common\Common.Logging\Common.Logging.csproj", "{3E0F4BAF-DCB9-4C0B-A07E-089D64D36FD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Common.Collection", "src\Services\Service.Common.Collection\Service.Common.Collection.csproj", "{F1D1C45C-6EB8-475F-B59E-FA731D785597}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Common.Collection", "src\Services\Service.Common.Collection\Service.Common.Collection.csproj", "{F1D1C45C-6EB8-475F-B59E-FA731D785597}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Common.Mapping", "src\Services\Service.Common.Mapping\Service.Common.Mapping.csproj", "{F84648E7-3E19-4311-8D6E-CE385F70E4D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Common.Mapping", "src\Services\Service.Common.Mapping\Service.Common.Mapping.csproj", "{F84648E7-3E19-4311-8D6E-CE385F70E4D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Common.Paging", "src\Services\Service.Common.Paging\Service.Common.Paging.csproj", "{9AA61560-AC33-47FB-B6F1-3D9332397574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Common.Paging", "src\Services\Service.Common.Paging\Service.Common.Paging.csproj", "{9AA61560-AC33-47FB-B6F1-3D9332397574}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06. Testing", "06. Testing", "{06634D54-C8A3-4A49-B58F-0F92E51CF265}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Tests", "src\Services\Catalog\Catalog.Tests\Catalog.Tests.csproj", "{686052AA-C8E6-4899-B3CF-9DD768214BFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +101,10 @@ Global
 		{9AA61560-AC33-47FB-B6F1-3D9332397574}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AA61560-AC33-47FB-B6F1-3D9332397574}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AA61560-AC33-47FB-B6F1-3D9332397574}.Release|Any CPU.Build.0 = Release|Any CPU
+		{686052AA-C8E6-4899-B3CF-9DD768214BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{686052AA-C8E6-4899-B3CF-9DD768214BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{686052AA-C8E6-4899-B3CF-9DD768214BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{686052AA-C8E6-4899-B3CF-9DD768214BFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +130,8 @@ Global
 		{F1D1C45C-6EB8-475F-B59E-FA731D785597} = {8D6549D1-C9E7-40AF-9F2E-64487E62D4CA}
 		{F84648E7-3E19-4311-8D6E-CE385F70E4D3} = {8D6549D1-C9E7-40AF-9F2E-64487E62D4CA}
 		{9AA61560-AC33-47FB-B6F1-3D9332397574} = {8D6549D1-C9E7-40AF-9F2E-64487E62D4CA}
+		{06634D54-C8A3-4A49-B58F-0F92E51CF265} = {EADF3602-5F86-4860-BD92-343FFDECA820}
+		{686052AA-C8E6-4899-B3CF-9DD768214BFD} = {06634D54-C8A3-4A49-B58F-0F92E51CF265}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF465431-5009-43D8-B4C1-6CF6904A6630}
