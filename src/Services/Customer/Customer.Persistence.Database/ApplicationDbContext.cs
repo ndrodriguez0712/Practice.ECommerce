@@ -1,8 +1,8 @@
-﻿using Catalog.Domain;
-using Catalog.Persistence.Database.Configuration;
+﻿using Customer.Domain;
 using Microsoft.EntityFrameworkCore;
+using Order.Persistence.Database.Configuration;
 
-namespace Catalog.Persistence.Database
+namespace Customer.Persistence.Database
 {
     public class ApplicationDbContext : DbContext
     {
@@ -13,16 +13,16 @@ namespace Catalog.Persistence.Database
         {
         }
 
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductInStock> Stocks { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            //Database Schema
-            builder.HasDefaultSchema("Catalog");
+            // Database schema
+            builder.HasDefaultSchema("Customer");
 
+            // Model Contraints
             ModelConfig(builder);
         }
 
@@ -34,8 +34,7 @@ namespace Catalog.Persistence.Database
         #region Private Methods
         private void ModelConfig(ModelBuilder modelBuilder)
         {
-            new ProductConfiguration(modelBuilder.Entity<Product>());
-            new ProductInStockConfiguration(modelBuilder.Entity<ProductInStock>());
+            new ClientConfiguration(modelBuilder.Entity<Client>());
         }
         #endregion
     }
