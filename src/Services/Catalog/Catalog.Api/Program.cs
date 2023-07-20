@@ -30,6 +30,7 @@ builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<Produc
 
 builder.Services.AddTransient<IProductQueryService, ProductQueryService>();
 
+// Health Checks Configurations.
 builder.Services.AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())
                 .AddDbContextCheck<ApplicationDbContext>();
@@ -44,6 +45,8 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();    
 }
 
+
+// Papertrail Configuration
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 loggerFactory.AddSyslog(config.GetValue<string>("Papertrail:host"), config.GetValue<int>("Papertrail:port"));
 
@@ -52,7 +55,8 @@ app.UseAuthorization();
 app.UseRouting()
    .UseEndpoints(config =>
     {
-        config.MapHealthChecks("/healthz", new HealthCheckOptions
+        // Health Checks Configurations.
+        config.MapHealthChecks("/hc", new HealthCheckOptions
         {
             Predicate = _ => true,
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
