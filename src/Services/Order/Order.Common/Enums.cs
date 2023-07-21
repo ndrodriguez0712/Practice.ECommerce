@@ -15,5 +15,11 @@
             PayPal,
             BankTransfer
         }
+
+        public enum ProductInStockAction
+        {
+            Add,
+            Substract
+        }
     }
 }

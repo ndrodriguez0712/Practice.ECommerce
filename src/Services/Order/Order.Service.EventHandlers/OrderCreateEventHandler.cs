@@ -5,6 +5,7 @@ using Order.Persistence.Database;
 using Order.Service.EventHandlers.Commands;
 using Order.Service.Proxies.Catalog.Commands;
 using Order.Service.Proxies.Interfaces;
+using static Order.Common.Enums;
 
 namespace Order.Service.EventHandlers
 {

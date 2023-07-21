@@ -7,6 +7,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Order.Service.Proxies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,9 @@ builder.Services.AddTransient<IProductQueryService, ProductQueryService>();
 builder.Services.AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())
                 .AddDbContextCheck<ApplicationDbContext>();
+
+// ApiUrls
+builder.Services.Configure<ApiUrls>(opts => config.GetSection("ApiUrls").Bind(opts));
 
 var app = builder.Build();
 
