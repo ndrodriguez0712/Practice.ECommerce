@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Messaging.ServiceBus;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Order.Service.Proxies.Catalog.Commands;
 using Order.Service.Proxies.Interfaces;
@@ -10,34 +11,27 @@ namespace Order.Service.Proxies.Catalog
     public class CatalogProxy : ICatalogProxy
     {
         #region Variables
-        private readonly ApiUrls _apiUrls;
-        private readonly HttpClient _httpClient;
+        private readonly string _connectionString;
         #endregion
 
         #region Constructor
-        public CatalogProxy(
-            HttpClient httpClient,
-            IOptions<ApiUrls> apiUrls,
-            IHttpContextAccessor httpContextAccessor)
+        public CatalogProxy(IOptions<AzureServiceBus> connectionString, HttpClient httpClient, IOptions<ApiUrls> apiUrls, IHttpContextAccessor httpContextAccessor)
         {
+            _connectionString = connectionString.Value.ConnectionString;
             httpClient.AddBearerToken(httpContextAccessor);
-
-            _httpClient = httpClient;
-            _apiUrls = apiUrls.Value;
         }
         #endregion
 
         public async Task UpdateStockAsync(ProductInStockUpdateStockCommand command)
         {
-            var content = new StringContent(
-                JsonSerializer.Serialize(command),
-                Encoding.UTF8,
-                "application/json"
-            );
+            var serviceBusClient = new ServiceBusClient(_connectionString);
+            var queueClient = serviceBusClient.CreateSender("order-stock-update");
 
-            var request = await _httpClient.PutAsync(_apiUrls.CatalogUrl + "v1/stocks", content);
+            string body = JsonSerializer.Serialize(command);
+            ServiceBusMessage message = new ServiceBusMessage(Encoding.UTF8.GetBytes(body));
 
-            request.EnsureSuccessStatusCode();
+            await queueClient.SendMessageAsync(message);
+            await queueClient.CloseAsync();
         }
     }
 }
