@@ -15,10 +15,10 @@ namespace Order.Service.Proxies.Catalog
         #endregion
 
         #region Constructor
-        public CatalogProxy(IOptions<AzureServiceBus> connectionString, HttpClient httpClient, IOptions<ApiUrls> apiUrls, IHttpContextAccessor httpContextAccessor)
+        public CatalogProxy(IOptions<AzureServiceBus> connectionString/*, HttpClient httpClient, IHttpContextAccessor httpContextAccessor*/)
         {
             _connectionString = connectionString.Value.ConnectionString;
-            httpClient.AddBearerToken(httpContextAccessor);
+           // httpClient.AddBearerToken(httpContextAccessor);
         }
         #endregion
 

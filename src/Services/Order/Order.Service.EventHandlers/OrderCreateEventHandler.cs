@@ -19,10 +19,7 @@ namespace Order.Service.EventHandlers
         #endregion
 
         #region Constrsuctor
-        public OrderCreateEventHandler(
-            ApplicationDbContext context,
-            ICatalogProxy catalogProxy,
-            ILogger<OrderCreateEventHandler> logger)
+        public OrderCreateEventHandler(ApplicationDbContext context, ICatalogProxy catalogProxy, ILogger<OrderCreateEventHandler> logger)
         {
             _context = context;
             _catalogProxy = catalogProxy;
@@ -81,7 +78,6 @@ namespace Order.Service.EventHandlers
                 Total = x.Price * x.Quantity
             }).ToList();
         }
-
         private void PrepareHeader(Domain.Order entry, OrderCreateCommand notification)
         {
             // Header information

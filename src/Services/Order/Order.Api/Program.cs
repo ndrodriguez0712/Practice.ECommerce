@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Order.Persistence.Database;
 using Order.Service.EventHandlers.Commands;
+using Order.Service.Proxies;
 using Order.Service.Proxies.Catalog;
 using Order.Service.Proxies.Interfaces;
 using Order.Service.Queries;
@@ -28,13 +29,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(opts =>
   )
 );
 
-// Event handlers
+// Event handlers.
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<OrderCreateCommand>());
 
-// Proxies
-builder.Services.AddHttpClient<ICatalogProxy, CatalogProxy>();
+// Azure Service Bus ConnectionString.
+builder.Services.Configure<AzureServiceBus>(opt => config.GetSection("AzureServiceBus").Bind(opt));
 
-// Query services
+// Proxy.
+builder.Services.AddTransient<ICatalogProxy, CatalogProxy>();
+
+// Query services.
 builder.Services.AddTransient<IOrderQueryService, OrderQueryService>();
 
 // Health Checks Configurations.
@@ -53,7 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
-// Papertrail Configuration
+// Papertrail Configuration.
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
 loggerFactory.AddSyslog(config.GetValue<string>("Papertrail:host"), config.GetValue<int>("Papertrail:port"));
 
