@@ -1,5 +1,4 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Order.Service.Proxies.Catalog.Commands;
 using Order.Service.Proxies.Interfaces;
@@ -15,10 +14,9 @@ namespace Order.Service.Proxies.Catalog
         #endregion
 
         #region Constructor
-        public CatalogProxy(IOptions<AzureServiceBus> connectionString/*, HttpClient httpClient, IHttpContextAccessor httpContextAccessor*/)
+        public CatalogProxy(IOptions<AzureServiceBus> connectionString)
         {
             _connectionString = connectionString.Value.ConnectionString;
-           // httpClient.AddBearerToken(httpContextAccessor);
         }
         #endregion
 
