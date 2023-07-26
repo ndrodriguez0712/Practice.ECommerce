@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Order.Persistence.Database;
 using Order.Service.EventHandlers.Commands;
-using Order.Service.Proxies;
 using Order.Service.Proxies.Catalog;
 using Order.Service.Proxies.Interfaces;
 using Order.Service.Queries;
 using Order.Service.Queries.Interfaces;
+using ServiceBusProvider;
+using ServiceBusProvider.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,8 +33,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(opts =>
 // Event handlers.
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<OrderCreateCommand>());
 
-// Azure Service Bus ConnectionString.
-builder.Services.Configure<AzureServiceBus>(opt => config.GetSection("AzureServiceBus").Bind(opt));
+// Azure Service Bus .
+builder.Services.AddSingleton<IServiceBusQueue, ServiceBusQueue>();
 
 // Proxy.
 builder.Services.AddTransient<ICatalogProxy, CatalogProxy>();

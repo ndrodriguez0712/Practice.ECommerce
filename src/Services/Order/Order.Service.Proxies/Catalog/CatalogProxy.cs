@@ -1,8 +1,6 @@
-﻿using Azure.Messaging.ServiceBus;
-using Microsoft.Extensions.Options;
-using Order.Service.Proxies.Catalog.Commands;
+﻿using Order.Service.Proxies.Catalog.Commands;
 using Order.Service.Proxies.Interfaces;
-using System.Text;
+using ServiceBusProvider.Interfaces;
 using System.Text.Json;
 
 namespace Order.Service.Proxies.Catalog
@@ -10,26 +8,20 @@ namespace Order.Service.Proxies.Catalog
     public class CatalogProxy : ICatalogProxy
     {
         #region Variables
-        private readonly string _connectionString;
+        private readonly IServiceBusQueue _serviceBusQueue;
         #endregion
 
         #region Constructor
-        public CatalogProxy(IOptions<AzureServiceBus> connectionString)
+        public CatalogProxy(IServiceBusQueue serviceBusQueue)
         {
-            _connectionString = connectionString.Value.ConnectionString;
+            _serviceBusQueue = serviceBusQueue;
         }
         #endregion
 
         public async Task UpdateStockAsync(ProductInStockUpdateStockCommand command)
         {
-            var serviceBusClient = new ServiceBusClient(_connectionString);
-            var queueClient = serviceBusClient.CreateSender("order-stock-update");
-
-            string body = JsonSerializer.Serialize(command);
-            ServiceBusMessage message = new ServiceBusMessage(Encoding.UTF8.GetBytes(body));
-
-            await queueClient.SendMessageAsync(message);
-            await queueClient.CloseAsync();
+            string message = JsonSerializer.Serialize(command);
+            await _serviceBusQueue.SendMessageAsync("order-stock-handler", message);
         }
     }
 }

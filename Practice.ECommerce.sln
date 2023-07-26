@@ -101,6 +101,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Listeners", "03. Listen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Listener", "src\Services\Catalog\Catalog.Listener\Catalog.Listener.csproj", "{98C1A231-5464-4A02-B049-410EC4AFD761}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusProvider", "src\Common\ServiceBusProvider\ServiceBusProvider.csproj", "{9547E98C-EAB9-42C1-A5CF-24A3D9317035}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -203,6 +205,10 @@ Global
 		{98C1A231-5464-4A02-B049-410EC4AFD761}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C1A231-5464-4A02-B049-410EC4AFD761}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98C1A231-5464-4A02-B049-410EC4AFD761}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9547E98C-EAB9-42C1-A5CF-24A3D9317035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9547E98C-EAB9-42C1-A5CF-24A3D9317035}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9547E98C-EAB9-42C1-A5CF-24A3D9317035}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9547E98C-EAB9-42C1-A5CF-24A3D9317035}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -253,6 +259,7 @@ Global
 		{DFCD0144-2997-4AB5-B9A1-92B590E3D306} = {EEEE9FE0-265F-4496-B07F-3BE662815DBC}
 		{39A4087A-C2D2-42E7-A607-51535899C106} = {EADF3602-5F86-4860-BD92-343FFDECA820}
 		{98C1A231-5464-4A02-B049-410EC4AFD761} = {39A4087A-C2D2-42E7-A607-51535899C106}
+		{9547E98C-EAB9-42C1-A5CF-24A3D9317035} = {20256765-2EC8-4141-84FE-52234D50EB1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF465431-5009-43D8-B4C1-6CF6904A6630}

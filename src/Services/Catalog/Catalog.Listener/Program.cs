@@ -18,11 +18,11 @@ var clientOptions = new ServiceBusClientOptions()
 {
     TransportType = ServiceBusTransportType.AmqpWebSockets
 };
+
 client = new ServiceBusClient("Endpoint=sb://practiceecommerce-queue.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=EhnfceeMg7/Aa3JjquWmicVZIh4b06cm++ASbLOziFE=", clientOptions);
 
 // create a processor that we can use to process the messages
-// TODO: Replace the <QUEUE-NAME> placeholder
-processor = client.CreateProcessor("order-stock-update", new ServiceBusProcessorOptions());
+processor = client.CreateProcessor("order-stock-handler", new ServiceBusProcessorOptions());
 
 try
 {
@@ -35,7 +35,7 @@ try
     // start processing 
     await processor.StartProcessingAsync();
 
-    Console.WriteLine("Wait for a minute and then press any key to end the processing");
+    Console.WriteLine("Catalog Listener is running...");
     Console.ReadKey();
 
     // stop processing 

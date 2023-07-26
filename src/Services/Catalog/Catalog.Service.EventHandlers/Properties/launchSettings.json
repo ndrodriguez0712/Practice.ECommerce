@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Catalog.Service.EventHandlers": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56778;http://localhost:56787"
+    }
+  }
+}

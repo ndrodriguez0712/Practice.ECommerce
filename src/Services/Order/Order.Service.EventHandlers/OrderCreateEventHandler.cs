@@ -18,7 +18,7 @@ namespace Order.Service.EventHandlers
         private readonly ILogger<OrderCreateEventHandler> _logger;
         #endregion
 
-        #region Constrsuctor
+        #region Constructor
         public OrderCreateEventHandler(ApplicationDbContext context, ICatalogProxy catalogProxy, ILogger<OrderCreateEventHandler> logger)
         {
             _context = context;
