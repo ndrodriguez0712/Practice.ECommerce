@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static Order.Common.Enums;
+﻿using static Order.Common.Enums;
 
 namespace Order.Domain
 {
