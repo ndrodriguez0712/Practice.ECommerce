@@ -15,7 +15,9 @@ namespace Identity.Persistence.Database
         }
 
         public DbSet<Domain.ApplicationUser> Users { get; set; }
+
         public DbSet<ApplicationUserRole> Roles { get; set; }
+
         public DbSet<ApplicationUserStatus> Status { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

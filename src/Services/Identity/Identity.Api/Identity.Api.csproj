@@ -21,8 +21,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Logging\Common.Logging.csproj" />
-    <ProjectReference Include="..\Customer.Service.EventHandlers\Customer.Service.EventHandlers.csproj" />
-    <ProjectReference Include="..\Customer.Service.Queries\Customer.Service.Queries.csproj" />
+    <ProjectReference Include="..\Identity.Persistence.Database\Identity.Persistence.Database.csproj" />
+    <ProjectReference Include="..\Identity.Service.EventHandlers\Identity.Service.EventHandlers.csproj" />
+    <ProjectReference Include="..\Identity.Service.Queries\Identity.Service.Queries.csproj" />
   </ItemGroup>
 
 </Project>

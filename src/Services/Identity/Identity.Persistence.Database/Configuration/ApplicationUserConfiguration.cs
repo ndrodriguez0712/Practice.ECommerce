@@ -34,10 +34,13 @@ namespace Identity.Persistence.Database.Configuration
 
             entityBuilder.Property(e => e.EmailVerification).IsRequired();
 
+            entityBuilder.HasOne(d => d.Role).WithMany(u => u.Users).HasForeignKey(d => d.IdRole).OnDelete(DeleteBehavior.ClientSetNull);
+
             entityBuilder.HasOne(d => d.Status).WithMany(u => u.Users).HasForeignKey(d => d.IdStatus).OnDelete(DeleteBehavior.ClientSetNull);
 
             var userAdmin = new ApplicationUser
             { 
+                Id = 1,
                 FirstName = "Nicolás D.",
                 LastName = "Rodríguez",
                 Email = "nico.d.rodriguez@hotmail.com",
@@ -46,6 +49,7 @@ namespace Identity.Persistence.Database.Configuration
                 Question = "asd",
                 Answer = "asd",
                 SignUpDate = DateTime.Now,
+                IdRole = 1,
                 IdStatus = 1,
                 EmailVerification = true
             };

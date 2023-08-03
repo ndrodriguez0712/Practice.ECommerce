@@ -14,7 +14,57 @@ namespace Identity.Persistence.Database.Configuration
 
             entityBuilder.Property(x => x.Name).IsRequired();
 
-            entityBuilder.Property(x => x.Description).IsRequired();
+            var userStatus = new List<ApplicationUserStatus>();
+
+            var activeStatus = new ApplicationUserStatus
+            {
+                Id = 1,
+                Name = "Active"
+            };
+
+            userStatus.Add(activeStatus);
+
+            var inactiveStatus = new ApplicationUserStatus
+            {
+                Id = 2,
+                Name = "Inactive"
+            };
+
+            userStatus.Add(inactiveStatus);
+
+            var pendingStatus = new ApplicationUserStatus
+            {
+                Id = 3,
+                Name = "Pending"
+            };
+
+            userStatus.Add(pendingStatus);
+
+            var pendingSendStatus = new ApplicationUserStatus
+            {
+                Id = 4,
+                Name = "PendingSend"
+            };
+
+            userStatus.Add(pendingSendStatus);
+
+            var pendingConfirmationStatus = new ApplicationUserStatus
+            {
+                Id = 5,
+                Name = "PendingConfirmation"
+            };
+
+            userStatus.Add(pendingConfirmationStatus);
+
+            var rejectedStatus = new ApplicationUserStatus
+            {
+                Id = 6,
+                Name = "Rejected"
+            };
+
+            userStatus.Add(rejectedStatus);
+
+            entityBuilder.HasData(userStatus);
         }
     }
 }
