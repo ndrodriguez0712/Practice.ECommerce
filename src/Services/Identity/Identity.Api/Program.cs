@@ -1,6 +1,9 @@
 using Common.Logging;
 using HealthChecks.UI.Client;
 using Identity.Persistence.Database;
+using Identity.Service.EventHandlers.Commands;
+using Identity.Service.Queries;
+using Identity.Service.Queries.Interfaces;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -23,9 +26,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(opts =>
   )
 );
 
-// builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<ProductCreateCommand>());
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserCreateCommand>());
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserLoginCommand>());
 
-// builder.Services.AddTransient<IProductQueryService, ProductQueryService>();
+builder.Services.AddTransient<IUserQueryService, UserQueryService>();
 
 // Health Checks Configurations.
 builder.Services.AddHealthChecks()
