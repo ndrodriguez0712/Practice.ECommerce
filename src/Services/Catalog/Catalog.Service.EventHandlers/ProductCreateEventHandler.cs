@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Catalog.Service.EventHandlers
 {
-    internal class ProductCreateEventHandler : INotificationHandler<ProductCreateCommand>
+    public class ProductCreateEventHandler : INotificationHandler<ProductCreateCommand>
     {
         #region Variables
         private readonly ApplicationDbContext _context;
