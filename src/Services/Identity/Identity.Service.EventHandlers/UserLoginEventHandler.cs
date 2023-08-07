@@ -1,4 +1,5 @@
 ﻿using Identity.Service.EventHandlers.Commands;
+using Identity.Service.EventHandlers.Helpers;
 using Identity.Service.EventHandlers.Responses;
 using MediatR;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Identity.Service.EventHandlers
 {
@@ -14,20 +14,13 @@ namespace Identity.Service.EventHandlers
         IRequestHandler<UserLoginCommand, IdentityAccess>
     {
         #region Variables
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly SignInManager _signInManager;
         #endregion
 
         #region Constructor
-        public UserLoginEventHandler(
-            SignInManager<ApplicationUser> signInManager,
-            ApplicationDbContext context,
-            IConfiguration configuration)
+        public UserLoginEventHandler(SignInManager signInManager)
         {
             _signInManager = signInManager;
-            _context = context;
-            _configuration = configuration;
         }
         #endregion
 
