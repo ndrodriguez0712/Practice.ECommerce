@@ -19,9 +19,9 @@ namespace Identity.Persistence.Database.DataAccess
 
         public IQueryable<T> GetAllAsQueryable() => _context.Set<T>();
 
-        public T Find(Expression<Func<T, bool>> match) => _context.Set<T>().SingleOrDefault(match);
+        public T SingleOrDefault(Expression<Func<T, bool>> match) => _context.Set<T>().SingleOrDefault(match);        
 
-        public T FindFirstOrDefault(Expression<Func<T, bool>> match) => _context.Set<T>().FirstOrDefault(match);
+        public T FirstOrDefault(Expression<Func<T, bool>> match) => _context.Set<T>().FirstOrDefault(match);
 
         public List<T> FindAll(Expression<Func<T, bool>> match) => _context.Set<T>().Where(match).ToList();
 
@@ -78,10 +78,20 @@ namespace Identity.Persistence.Database.DataAccess
             }
         }
 
-        public int Count(Expression<Func<T, bool>> match = null) =>
-            match != null ? _context.Set<T>().Count(match) : _context.Set<T>().Count();
+        public int Count(Expression<Func<T, bool>> match = null) => match != null ? _context.Set<T>().Count(match) : _context.Set<T>().Count();
 
-        public bool Exists(Expression<Func<T, bool>> match = null) => 
-            _context.Set<T>().Any(match);
+        public bool Exists(Expression<Func<T, bool>> match = null) => _context.Set<T>().Any(match);
+
+        public async Task<T> AddAsync(T t)
+        {
+            await _context.Set<T>().AddAsync(t);
+            return t;
+        }
+
+        public async Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> match) => await _context.Set<T>().SingleOrDefaultAsync(match);
+
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> match) => await _context.Set<T>().FirstOrDefaultAsync(match);
+
+        public async Task<List<T>> FindAllAsync(Expression<Func<T, bool>> match) => await _context.Set<T>().Where(match).ToListAsync();        
     }
 }

@@ -1,36 +1,36 @@
-﻿using Identity.Service.EventHandlers.Commands;
+﻿using Identity.Domain;
+using Identity.Service.EventHandlers.Commands;
+using Identity.Service.EventHandlers.Helpers.Interfaces;
 using Identity.Service.EventHandlers.Responses;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Identity.Service.EventHandlers
 {
-    public class UserCreateEventHandler :
-        IRequestHandler<UserCreateCommand, IdentityResult>
+    public class UserCreateEventHandler : IRequestHandler<UserCreateCommand, IdentityResult>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        #region Variables
+        private readonly IUserAuthManager _userAuthManager;
+        #endregion
 
-        public UserCreateEventHandler(
-            UserManager<ApplicationUser> userManager)
+        #region Constructor
+        public UserCreateEventHandler(IUserAuthManager userAuthManager)
         {
-            _userManager = userManager;
+            _userAuthManager = userAuthManager;
         }
+        #endregion
 
         public async Task<IdentityResult> Handle(UserCreateCommand notification, CancellationToken cancellationToken)
         {
-            var entry = new ApplicationUser
+            var result = new IdentityResult();
+
+            var user = new ApplicationUser
             {
                 FirstName = notification.FirstName,
                 LastName = notification.LastName,
-                Email = notification.Email,
-                UserName = notification.Email
+                Email = notification.Email                
             };
 
-            return await _userManager.CreateAsync(entry, notification.Password);
+            return result;
         }
     }
 }

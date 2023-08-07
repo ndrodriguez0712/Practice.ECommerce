@@ -18,7 +18,7 @@ namespace Identity.Persistence.Database.Interfaces
         /// <param name="match">A Linq expression filter to find a single result</param>
         /// <returns>A single object which matches the expression filter. 
         /// If more than one object is found or if zero are found, null is returned</returns>
-        T Find(Expression<Func<T, bool>> match);
+        T SingleOrDefault(Expression<Func<T, bool>> match);
 
         /// <summary>
         /// Returns first or default object which matches the provided expression
@@ -27,7 +27,7 @@ namespace Identity.Persistence.Database.Interfaces
         /// <param name="match">A Linq expression filter to find a single result</param>
         /// <returns>First or default  object which matches the expression filter. 
         /// If more than one object is found or if zero are found, null is returned</returns>
-        T FindFirstOrDefault(Expression<Func<T, bool>> match);
+        T FirstOrDefault(Expression<Func<T, bool>> match);
 
         /// <summary>
         /// Returns a collection of objects which match the provided expression
@@ -117,5 +117,9 @@ namespace Identity.Persistence.Database.Interfaces
         /// <param name="match">A linq expression filter to find one or more results</param>
         /// <returns>The count of the number of objects</returns>
         bool Exists(Expression<Func<T, bool>> match = null);
+        Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> match);
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> match);
+        Task<T> AddAsync(T t);
+        Task<List<T>> FindAllAsync(Expression<Func<T, bool>> match);
     }
 }

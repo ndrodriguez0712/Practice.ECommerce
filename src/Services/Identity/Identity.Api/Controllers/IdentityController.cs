@@ -1,8 +1,9 @@
-﻿using Identity.Domain;
-using Identity.Service.EventHandlers.Commands;
+﻿using Identity.Service.EventHandlers.Commands;
+using Identity.Service.EventHandlers.Responses;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Identity.Api.Controllers
 {
@@ -12,23 +13,23 @@ namespace Identity.Api.Controllers
     {
         #region Variables
         private readonly ILogger<IdentityController> _logger;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMediator _mediator;
         #endregion
 
         #region Constructor
         public IdentityController(
             ILogger<IdentityController> logger,
-            SignInManager<ApplicationUser> signInManager,
             IMediator mediator)
         {
             _logger = logger;
-            _signInManager = signInManager;
             _mediator = mediator;
         }
         #endregion
 
         [HttpPost]
+        [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(bool))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create(UserCreateCommand command)
         {
             if (ModelState.IsValid)
@@ -47,6 +48,8 @@ namespace Identity.Api.Controllers
         }
 
         [HttpPost("authentication")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IdentityAccess))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Authentication(UserLoginCommand command)
         {
             if (ModelState.IsValid)

@@ -32,7 +32,7 @@ builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserCr
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserLoginCommand>());
 
 builder.Services.AddTransient<IUserQueryService, UserQueryService>();
-builder.Services.AddSingleton<ISignInManager, SignInManager>();
+builder.Services.AddSingleton<IUserAuthManager, UserAuthManager>();
 
 // Health Checks Configurations.
 builder.Services.AddHealthChecks()
