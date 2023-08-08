@@ -14,7 +14,7 @@
         public DateTime? LastLoginDate { get; set; }
         public int IdRole { get; set; }
         public int IdStatus { get; set; }
-        public bool EmailVerification { get; set; }
+        public bool EmailVerification { get; set; } = false;
         public virtual ApplicationUserRole Role { get; set; }
         public virtual ApplicationUserStatus Status { get; set; }
     }

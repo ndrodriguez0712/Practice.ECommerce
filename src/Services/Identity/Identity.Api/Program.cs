@@ -1,16 +1,22 @@
 using Common.Logging;
 using HealthChecks.UI.Client;
 using Identity.Persistence.Database;
+using Identity.Persistence.Database.DataAccess;
+using Identity.Persistence.Database.Interfaces;
 using Identity.Service.EventHandlers.Commands;
 using Identity.Service.EventHandlers.Helpers;
 using Identity.Service.EventHandlers.Helpers.Interfaces;
 using Identity.Service.Queries;
 using Identity.Service.Queries.Interfaces;
+using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+System.Globalization.CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
 IConfiguration config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -31,6 +37,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opts =>
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserCreateCommand>());
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserLoginCommand>());
 
+builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>();
 builder.Services.AddTransient<IUserQueryService, UserQueryService>();
 builder.Services.AddSingleton<IUserAuthManager, UserAuthManager>();
 

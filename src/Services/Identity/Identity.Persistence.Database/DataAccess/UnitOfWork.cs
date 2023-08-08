@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Persistence.Database.DataAccess
 {
-    public class UnitOfWork<TContext> : IUnitOfWork<TContext>
-          where TContext : DbContext, IDisposable
+    public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext, IDisposable
     {
         #region Variables
         private Dictionary<Type, object> _repositories;

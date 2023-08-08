@@ -3,13 +3,18 @@ using Identity.Persistence.Database;
 using Identity.Persistence.Database.Interfaces;
 using Identity.Service.EventHandlers.Helpers.Interfaces;
 using Identity.Service.EventHandlers.Responses;
+using Identity.Service.Queries.DTOs;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Service.Common.Mapping;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
+using static Identity.Common.Enums;
 
 namespace Identity.Service.EventHandlers.Helpers
 {
@@ -28,18 +33,25 @@ namespace Identity.Service.EventHandlers.Helpers
         }
         #endregion
 
-        //public async Task<ApplicationUser> CreateUserAsync()
-        //{
-
-        //}
+        public async Task<bool> CreateUserAsync(UserAuthDto userAuthDto)
+        {
+            
+        }
 
         public async Task<ApplicationUser> GetUserAsync(string email)
         {
             using IServiceScope scope = _serviceProvider.CreateScope();
             IUnitOfWork<ApplicationDbContext> _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>();
             IBaseRepository<ApplicationUser> _applicationUserRepository = _unitOfWork.GetRepository<ApplicationUser>();
+            IBaseRepository<ApplicationUserRole> _applicationUserRoleRepository = _unitOfWork.GetRepository<ApplicationUserRole>();
 
-            return await _applicationUserRepository.FirstOrDefaultAsync(x => x.Email == email);
+            var user = await (from u in _applicationUserRepository.GetAllAsQueryable()
+                    join rol in _applicationUserRoleRepository.GetAllAsQueryable()
+                    on u.IdRole equals rol.Id
+                    where u.Email == email
+                    select u).Include(r => r.Role).FirstOrDefaultAsync();
+
+            return user;
         }
 
         public bool CheckPasswordSignIn(string passwordHashed, string password)
@@ -92,10 +104,9 @@ namespace Identity.Service.EventHandlers.Helpers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, $"{user.FirstName}_{user.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Role, rol),
                 new Claim("IdUser", user.Id.ToString())
-            };
-
-            new Claim(ClaimTypes.Role, rol);
+            };            
 
             var expiration = DateTime.UtcNow.AddDays(3);
 

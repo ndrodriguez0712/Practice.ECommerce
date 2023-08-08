@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Identity.Common\Identity.Common.csproj" />
     <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
     <ProjectReference Include="..\Identity.Persistence.Database\Identity.Persistence.Database.csproj" />
     <ProjectReference Include="..\Identity.Service.Queries\Identity.Service.Queries.csproj" />
