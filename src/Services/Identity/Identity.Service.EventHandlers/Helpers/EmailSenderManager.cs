@@ -1,9 +1,9 @@
 ﻿using Identity.Service.Queries.DTOs;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Utils;
-using System.Net.Mail;
 
 namespace Identity.Service.EventHandlers.Helpers
 {
@@ -11,14 +11,14 @@ namespace Identity.Service.EventHandlers.Helpers
     {
         #region Variables
         private readonly SmtpConfigurationDto _smtpConfigurationDto;
-        private readonly IConfiguration _configuracion;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Constructor 
         public EmailSenderManager(IOptions<SmtpConfigurationDto> smtpConfigurationDto, IConfiguration configuration)
         {
             _smtpConfigurationDto = smtpConfigurationDto.Value;
-            _configuracion = configuration;
+            _configuration = configuration;
         }
         #endregion
 
@@ -30,14 +30,14 @@ namespace Identity.Service.EventHandlers.Helpers
             {
                 var builder = new BodyBuilder();
                 var htmlBody = string.Empty;
-                var schemeRootPath = ObtenerRutaRaiz("Email:SchemePath");
-                var logoRootPath = ObtenerRutaRaiz("Email:PracticeECommerce");
-                var urlPracticeECommerce = _configuracion.GetSection("Email:UrlPracticeECommerceFront").Value;
-                var logoPracticeECommerce = ObtenerArchivo(logoRootPath, "LogoPracticeECommerce.png");
+                var schemeRootPath = GetRootPath("Email:SchemePath");
+                var logoRootPath = GetRootPath("Email:PracticeECommerce");
+                var urlPracticeECommerce = _configuration.GetSection("Email:UrlPracticeECommerceFront").Value;
+                var logoPracticeECommerce = GetFile(logoRootPath, "LogoPracticeECommerce.png");
                 var image = builder.LinkedResources.Add(logoPracticeECommerce);
                 image.ContentId = MimeUtils.GenerateMessageId();
 
-                using (StreamReader sr = System.IO.File.OpenText(ObtenerArchivo(schemeRootPath, emailRequest.SchemeName)))
+                using (StreamReader sr = System.IO.File.OpenText(GetFile(schemeRootPath, emailRequest.SchemeName)))
                 {
                     htmlBody = sr.ReadToEnd();
                 }
@@ -65,28 +65,28 @@ namespace Identity.Service.EventHandlers.Helpers
 
             using var client = new SmtpClient();
             client.CheckCertificateRevocation = false;
-            await client.ConnectAsync(_smtpConfigurationDto.Servidor, _smtpConfigurationDto.Puerto, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_smtpConfigurationDto.NombreUsuario, _smtpConfigurationDto.Password);
+            await client.ConnectAsync(_smtpConfigurationDto.Server, _smtpConfigurationDto.Port, MailKit.Security.SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(_smtpConfigurationDto.UserName, _smtpConfigurationDto.From);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }
 
         #region Metodos Privados
-        private string ObtenerRutaRaiz(string section)
+        private string GetRootPath(string section)
         {
             var rutaDefault = _configuration.GetSection(section).Value;
             var ruta = $"{AppDomain.CurrentDomain.BaseDirectory}{rutaDefault}";
 
-#if DEBUG
+            #if DEBUG
             ruta = $"{Directory.GetParent("CedServicios.Api")}{rutaDefault}";
-#endif
+            #endif
 
             if (!Directory.Exists(ruta))
                 throw new Exception($"No se encontró la ruta de acceso a la ruta: {ruta}.");
 
             return ruta;
         }
-        private string ObtenerArchivo(string ruta, string archivo)
+        private string GetFile(string ruta, string archivo)
         {
             var esquema = Directory.EnumerateFiles(ruta);
 
