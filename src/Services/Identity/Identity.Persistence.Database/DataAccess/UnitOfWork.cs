@@ -28,6 +28,11 @@ namespace Identity.Persistence.Database.DataAccess
 
         public TContext Context { get; }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await Context.SaveChangesAsync();
+        }
+
         public int SaveChanges()
         {
             return Context.SaveChanges();
@@ -48,6 +53,6 @@ namespace Identity.Persistence.Database.DataAccess
                 Context?.Dispose();
             }
             isDisposed = true;
-        }
+        }        
     }
 }

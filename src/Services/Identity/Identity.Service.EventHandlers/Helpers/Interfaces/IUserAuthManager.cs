@@ -7,7 +7,7 @@ namespace Identity.Service.EventHandlers.Helpers.Interfaces
     {
         Task<ApplicationUser> GetUserAsync(string email);
         bool CheckPasswordSignIn(string user, string password);
-        string Hash(string password);
         IdentityAccess GenerateToken(ApplicationUser user, string rol);
+        Task CreateUserAsync(ApplicationUser user);
     }
 }

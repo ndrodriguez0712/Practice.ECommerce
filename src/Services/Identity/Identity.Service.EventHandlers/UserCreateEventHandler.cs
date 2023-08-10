@@ -2,10 +2,8 @@
 using Identity.Service.EventHandlers.Commands;
 using Identity.Service.EventHandlers.Helpers.Interfaces;
 using Identity.Service.EventHandlers.Responses;
-using Identity.Service.Queries.DTOs;
 using MediatR;
 using static Identity.Common.Enums;
-using System.Web;
 using Service.Common.Mapping;
 
 namespace Identity.Service.EventHandlers
@@ -14,12 +12,18 @@ namespace Identity.Service.EventHandlers
     {
         #region Variables
         private readonly IUserAuthManager _userAuthManager;
+        private readonly IEncryptionManager _encryptionManager;
+        private readonly ICaptchaManager _captchaManager;
+        private readonly IEmailSenderManager _emailSenderManager;
         #endregion
 
         #region Constructor
-        public UserCreateEventHandler(IUserAuthManager userAuthManager)
+        public UserCreateEventHandler(IUserAuthManager userAuthManager, IEncryptionManager encryptionManager, ICaptchaManager captchaManager, IEmailSenderManager emailSenderManager)
         {
             _userAuthManager = userAuthManager;
+            _encryptionManager = encryptionManager;
+            _captchaManager = captchaManager;
+            _emailSenderManager = emailSenderManager;            
         }
         #endregion
 
@@ -27,41 +31,44 @@ namespace Identity.Service.EventHandlers
         {
             var result = new IdentityResult();
 
-            var user = notification.MapTo<ApplicationUser>();
-            user.Password = _userAuthManager.Hash(user.Password);
-
-            //await _captchaServicio.IsValid(user.TokenCaptcha);
-
-            var userDb = await _userAuthManager.GetUserAsync(user.Email);
-
-            if (userDb != null)
-                return result;
-
-            user.IdStatus = (int)UserStatusEnum.Pending;
-            user.SignUpDate = DateTime.Now;
-            user.LastLoginDate = DateTime.Now;
-            user.IdRole = (int)UserRoleEnum.Visit;
-            user.EmailVerification = false;
-
-            //await _usuarioGestor.AgregarUsuario(user);
-
-            var encryptedText = _encriptacionServicio.Encriptar(user.Email.Trim(), _configuration["KeyEncriptacion"]);
-            var encodedEncryptedText = HttpUtility.UrlEncode(encryptedText);
-
-            var email = new EmailSolicitud()
+            try
             {
-                Email = userDto.Email,
-                NombreDestinatario = usuarioDto.NombreCompleto,
-                Titulo = "Confirmación de cuenta Cedeira Servicios Factura Electrónica",
-                Cuerpo = $"{_configuration["UrlEmailVerification"]}{encodedEncryptedText}",
-                NombreDePlantilla = "VerificacionEmail.html"
-            };
+                await _captchaManager.IsValid(notification.TokenCaptcha);
 
-            _emailServicio.MandarEmailAsync(email);
+                var userDb = await _userAuthManager.GetUserAsync(notification.Email);
 
-            return true;
+                if (userDb != null)
+                    return result;
 
-            return result;
+                var user = notification.MapTo<ApplicationUser>();
+
+                user.Password = _encryptionManager.Hash(user.Password);
+                user.IdStatus = (int)UserStatusEnum.Pending;
+                user.SignUpDate = DateTime.Now;
+                user.LastLoginDate = DateTime.Now;
+                user.IdRole = (int)UserRoleEnum.Visit;
+                user.EmailVerification = false;
+
+                await _userAuthManager.CreateUserAsync(user);
+                await _emailSenderManager.SendUserCreatedEmailAsync(user.Email, $"{user.FirstName} {user.LastName}");
+
+                result.Succeeded = true;
+
+                return result;
+            }
+            catch (Exception ex) 
+            {
+                result.Succeeded = false;
+                foreach(var error in ex.Data)
+                {
+                    result.Errors.Add(new IdentityError {
+                                                            Code = error.ToString() ?? "Code Unknown" ,
+                                                            Description = ex.InnerException != null ? ex.InnerException.Message : ex.Message
+                                                        });
+                }
+
+                return result;
+            }
         }
     }
 }

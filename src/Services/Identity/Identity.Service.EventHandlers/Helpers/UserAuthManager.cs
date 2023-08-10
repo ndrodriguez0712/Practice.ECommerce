@@ -3,18 +3,14 @@ using Identity.Persistence.Database;
 using Identity.Persistence.Database.Interfaces;
 using Identity.Service.EventHandlers.Helpers.Interfaces;
 using Identity.Service.EventHandlers.Responses;
-using Identity.Service.Queries.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Service.Common.Mapping;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
-using static Identity.Common.Enums;
 
 namespace Identity.Service.EventHandlers.Helpers
 {
@@ -23,19 +19,26 @@ namespace Identity.Service.EventHandlers.Helpers
         #region Variables
         private readonly IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IEncryptionManager _encryptionService;
         #endregion
 
         #region Constructor        
-        public UserAuthManager(IConfiguration configuration, IServiceProvider serviceProvider)
+        public UserAuthManager(IConfiguration configuration, IServiceProvider serviceProvider, IEncryptionManager encryptionService)
         {
             _configuration = configuration;
-            _serviceProvider = serviceProvider;            
+            _serviceProvider = serviceProvider;
+            _encryptionService = encryptionService;
         }
         #endregion
 
-        public async Task<bool> CreateUserAsync(UserAuthDto userAuthDto)
+        public async Task CreateUserAsync(ApplicationUser user)
         {
-            
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            IUnitOfWork<ApplicationDbContext> _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<ApplicationDbContext>>();
+            IBaseRepository<ApplicationUser> _applicationUserRepository = _unitOfWork.GetRepository<ApplicationUser>();
+
+            await _applicationUserRepository.AddAsync(user);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<ApplicationUser> GetUserAsync(string email)
@@ -56,39 +59,8 @@ namespace Identity.Service.EventHandlers.Helpers
 
         public bool CheckPasswordSignIn(string passwordHashed, string password)
         {
-            string hashed;
-
-            using (SHA256 mySHA256 = SHA256.Create())
-            {
-                SHA256 sha256 = SHA256.Create();
-                ASCIIEncoding encoding = new ASCIIEncoding();
-                byte[] stream = null;
-                StringBuilder sb = new StringBuilder();
-                stream = sha256.ComputeHash(encoding.GetBytes(password));
-                for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
-                hashed = sb.ToString();
-            }
-
-            if (passwordHashed == hashed)
-                return true;
-            else
-                return false;
-        }
-
-        public string Hash(string password)
-        {
-            using (SHA256 mySHA256 = SHA256.Create())
-            {
-                SHA256 sha256 = SHA256.Create();
-                ASCIIEncoding encoding = new ASCIIEncoding();
-                byte[] stream = null;
-                StringBuilder sb = new StringBuilder();
-                stream = sha256.ComputeHash(encoding.GetBytes(password));
-                for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
-                var hashed = sb.ToString();
-                return hashed;
-            }
-        }
+            return (passwordHashed == _encryptionService.Hash(password));
+        }        
 
         public IdentityAccess GenerateToken(ApplicationUser user, string rol)
         {

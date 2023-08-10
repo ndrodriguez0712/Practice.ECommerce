@@ -1,45 +1,45 @@
 using Common.Logging;
 using HealthChecks.UI.Client;
+using Identity.Api.Extensions;
 using Identity.Persistence.Database;
-using Identity.Persistence.Database.DataAccess;
-using Identity.Persistence.Database.Interfaces;
-using Identity.Service.EventHandlers.Commands;
-using Identity.Service.EventHandlers.Helpers;
-using Identity.Service.EventHandlers.Helpers.Interfaces;
-using Identity.Service.Queries;
-using Identity.Service.Queries.Interfaces;
-using k8s.KubeConfigModels;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Globalization;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 System.Globalization.CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
+ConfigurationManager configuration = builder.Configuration;
+IWebHostEnvironment environment = builder.Environment;
+
 IConfiguration config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .Build();
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOptions(configuration);
+builder.Services.AddDbContexts(configuration);
+builder.Services.AddServices();
+builder.Services.AddSwagger($"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
 
-builder.Services.AddDbContext<ApplicationDbContext>(opts =>
-    opts.UseSqlServer(
-        config.GetConnectionString("DefaultConnection"),
-        x => x.MigrationsHistoryTable("__EFMigrationsHistory", "User")
-  )
-);
+//builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+//    opts.UseSqlServer(
+//        config.GetConnectionString("DefaultConnection"),
+//        x => x.MigrationsHistoryTable("__EFMigrationsHistory", "User")
+//  )
+//);
 
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserCreateCommand>());
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserLoginCommand>());
+//builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserCreateCommand>());
+//builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserLoginCommand>());
 
-builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>();
-builder.Services.AddTransient<IUserQueryService, UserQueryService>();
-builder.Services.AddSingleton<IUserAuthManager, UserAuthManager>();
+//builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>();
+//builder.Services.AddTransient<IUserQueryService, UserQueryService>();
+//builder.Services.AddSingleton<IUserAuthManager, UserAuthManager>();
 
 // Health Checks Configurations.
 builder.Services.AddHealthChecks()
@@ -61,7 +61,7 @@ if (app.Environment.IsDevelopment())
 
 // Papertrail Configuration
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
-loggerFactory.AddSyslog(config.GetValue<string>("Papertrail:host"), config.GetValue<int>("Papertrail:port"));
+loggerFactory.AddSyslog(configuration.GetValue<string>("Papertrail:host"), configuration.GetValue<int>("Papertrail:port"));
 
 app.UseAuthorization();
 

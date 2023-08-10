@@ -26,7 +26,7 @@ namespace Identity.Api.Controllers
         }
         #endregion
 
-        [HttpPost]
+        [HttpPost("Create")]
         [AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(bool))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -34,50 +34,34 @@ namespace Identity.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                var result = await _mediator.Send(command);
+
+                if (!result.Succeeded)
                 {
-                    var result = await _mediator.Send(command);
-
-                    if (!result.Succeeded)
-                    {
-                        return StatusCode(500, result.Errors);
-                    }
-
-                    return Ok();
+                    return StatusCode(500, result.Errors);
                 }
-                catch (Exception ex)
-                {
-                    //ErrorLogService.SaveErrorLog(0, Assembly.GetEntryAssembly().GetName().Name, LogError.GetErrorDescription(EnumErrorCode.OMS9999.ToString()), EnumErrorCode.OMS9999, ex, "", 0, 0);
-                    return StatusCode(500, ex);
-                }                
+
+                return Ok();
             }
 
             return BadRequest();
         }
 
-        [HttpPost("authentication")]
+        [HttpPost("Login")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IdentityAccess))]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> Authentication(UserLoginCommand command)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var result = await _mediator.Send(command);
+                var result = await _mediator.Send(command);
 
-                    if (!result.Succeeded)
-                    {
-                        return Unauthorized("Access denied");
-                    }
-
-                    return Ok(result);
-                }
-                catch(Exception ex) 
+                if (!result.Succeeded)
                 {
-                    //ErrorLogService.SaveErrorLog(0, Assembly.GetEntryAssembly().GetName().Name, LogError.GetErrorDescription(EnumErrorCode.OMS9999.ToString()), EnumErrorCode.OMS9999, ex, "", 0, 0);
-                    return Unauthorized(ex);
+                    return Unauthorized("Access denied");
                 }
+
+                return Ok(result);
             }
 
             return BadRequest();

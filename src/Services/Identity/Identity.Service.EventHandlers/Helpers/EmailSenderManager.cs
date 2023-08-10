@@ -1,102 +1,115 @@
-﻿using Identity.Service.Queries.DTOs;
+﻿using Identity.Service.EventHandlers.Helpers.Interfaces;
+using Identity.Service.Queries.DTOs;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Utils;
+using System.Web;
 
 namespace Identity.Service.EventHandlers.Helpers
 {
-    public class EmailSenderManager
+    public class EmailSenderManager : IEmailSenderManager
     {
         #region Variables
         private readonly SmtpConfigurationDto _smtpConfigurationDto;
         private readonly IConfiguration _configuration;
+        private readonly IEncryptionManager _encryptionService;
         #endregion
 
         #region Constructor 
-        public EmailSenderManager(IOptions<SmtpConfigurationDto> smtpConfigurationDto, IConfiguration configuration)
+        public EmailSenderManager(IOptions<SmtpConfigurationDto> smtpConfigurationDto, IConfiguration configuration, IEncryptionManager encryptionService)
         {
             _smtpConfigurationDto = smtpConfigurationDto.Value;
             _configuration = configuration;
+            _encryptionService = encryptionService;
         }
         #endregion
 
-        public async Task MandarEmailAsync(EmailRequestDto emailRequest)
+        public async Task SendUserCreatedEmailAsync(string userEmail, string userCompleteName)
+        {
+            var encryptedText = _encryptionService.Encrypt(userEmail.Trim(), _configuration["EncryptionKey"]);
+            var encodedEncryptedText = HttpUtility.UrlEncode(encryptedText);
+
+            var email = new EmailRequestDto()
+            {
+                Email = userEmail,
+                DestinyName = userCompleteName,
+                Title = "Practice ECommerce account confirmation",
+                Body = encodedEncryptedText,
+                SchemeName = "VerificationEmail.html"
+            };
+
+            await MandarEmailAsync(email);
+        }
+
+        #region Metodos Privados
+        private async Task MandarEmailAsync(EmailRequestDto emailRequest)
         {
             var message = new MimeMessage();
+            var builder = new BodyBuilder();
+            var htmlBody = string.Empty;
+            var schemeRootPath = GetRootPath("Email:SchemePath");
+            var logoRootPath = GetRootPath("Email:PracticeECommerce");
+            var urlPracticeECommerce = _configuration.GetSection("Email:UrlPracticeECommerceFront").Value;
+            var logoPracticeECommerce = GetFile(logoRootPath, "LogoPracticeECommerce.png");
+            var image = builder.LinkedResources.Add(logoPracticeECommerce);
+            image.ContentId = MimeUtils.GenerateMessageId();
 
-            if (emailRequest.SchemeName != null)
+            using (StreamReader sr = System.IO.File.OpenText(GetFile(schemeRootPath, emailRequest.SchemeName)))
             {
-                var builder = new BodyBuilder();
-                var htmlBody = string.Empty;
-                var schemeRootPath = GetRootPath("Email:SchemePath");
-                var logoRootPath = GetRootPath("Email:PracticeECommerce");
-                var urlPracticeECommerce = _configuration.GetSection("Email:UrlPracticeECommerceFront").Value;
-                var logoPracticeECommerce = GetFile(logoRootPath, "LogoPracticeECommerce.png");
-                var image = builder.LinkedResources.Add(logoPracticeECommerce);
-                image.ContentId = MimeUtils.GenerateMessageId();
-
-                using (StreamReader sr = System.IO.File.OpenText(GetFile(schemeRootPath, emailRequest.SchemeName)))
-                {
-                    htmlBody = sr.ReadToEnd();
-                }
-
-                /*
-                    {0} = Titulo del mail.
-                    {1} = Logo de PracticeECommerce.
-                    {2} = Nombre del destinatario.
-                    {3} = Mensaje a envíar.
-                    {4} = Url del front.
-                */
-
-                builder.HtmlBody = string.Format(htmlBody, emailRequest.Title, image.ContentId, emailRequest.DestinyName, emailRequest.Body, urlPracticeECommerce);
-
-                message.Body = builder.ToMessageBody();
-            }
-            else
-            {
-                message.Body = new TextPart("html") { Text = emailRequest.Body };
+                htmlBody = sr.ReadToEnd();
             }
 
-            message.From.Add(new MailboxAddress(_smtpConfigurationDto.UserName, _smtpConfigurationDto.From));
+            /*
+                {0} = Mail Title.
+                {1} = PracticeECommerce Logo.
+                {2} = Destiny mail.
+                {3} = Message.
+                {4} = Url of the Front.
+            */
+
+            builder.HtmlBody = string.Format(htmlBody, emailRequest.Title, image.ContentId, emailRequest.DestinyName, emailRequest.Body, urlPracticeECommerce);
+
+            message.Body = builder.ToMessageBody();
+
+            //-----------------------------------------------
+            message.From.Add(new MailboxAddress(_smtpConfigurationDto.Email, _smtpConfigurationDto.From));
             message.To.Add(new MailboxAddress(emailRequest.DestinyName, emailRequest.Email));
             message.Subject = emailRequest.Title;
 
             using var client = new SmtpClient();
             client.CheckCertificateRevocation = false;
             await client.ConnectAsync(_smtpConfigurationDto.Server, _smtpConfigurationDto.Port, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_smtpConfigurationDto.UserName, _smtpConfigurationDto.From);
+            await client.AuthenticateAsync(_smtpConfigurationDto.Email, _smtpConfigurationDto.From);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }
-
-        #region Metodos Privados
         private string GetRootPath(string section)
         {
-            var rutaDefault = _configuration.GetSection(section).Value;
-            var ruta = $"{AppDomain.CurrentDomain.BaseDirectory}{rutaDefault}";
+            var defaultPath = _configuration.GetSection(section).Value;
+            var path = $"{AppDomain.CurrentDomain.BaseDirectory}{defaultPath}";
 
             #if DEBUG
-            ruta = $"{Directory.GetParent("CedServicios.Api")}{rutaDefault}";
+            path = $"{Directory.GetParent("Identity.Api")}{defaultPath}";
             #endif
 
-            if (!Directory.Exists(ruta))
-                throw new Exception($"No se encontró la ruta de acceso a la ruta: {ruta}.");
+            if (!Directory.Exists(path))
+                throw new Exception($"Path not found: {path}.");
 
-            return ruta;
+            return path;
         }
-        private string GetFile(string ruta, string archivo)
+        private string GetFile(string path, string file)
         {
-            var esquema = Directory.EnumerateFiles(ruta);
+            var scheme = Directory.EnumerateFiles(path);
 
-            if (esquema == null)
-                throw new Exception($"La carpeta contenedora está vacia. Ruta de acceso: {ruta}.");
+            if (scheme == null)
+                throw new Exception($"The containing folder is empty. Access path: {path}.");
 
-            var result = esquema.Where(x => x.Equals($"{ruta}{archivo}")).FirstOrDefault();
+            var result = scheme.Where(x => x.Equals($"{path}{file}")).FirstOrDefault();
 
             if (result == null)
-                throw new Exception($"No se encontró el objeto indicado, esquema: {archivo}.");
+                throw new Exception($"The indicated object was not found, schema: {file}.");
 
             return result;
         }
