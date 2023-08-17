@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Identity.Api.Controllers
 {
@@ -51,6 +52,27 @@ namespace Identity.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IdentityAccess))]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> Authentication(UserLoginCommand command)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _mediator.Send(command);
+
+                if (!result.Succeeded)
+                {
+                    return Unauthorized("Access denied");
+                }
+
+                return Ok(result);
+            }
+
+            return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(bool))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [HttpPost("ResendLogupEmail")]
+        public async Task<IActionResult> ResendLogupEmail(UsuarioReenvioMailDto command)
         {
             if (ModelState.IsValid)
             {

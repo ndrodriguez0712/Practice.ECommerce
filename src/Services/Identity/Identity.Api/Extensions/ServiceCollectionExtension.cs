@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Identity.Persistence.Database;
 using Identity.Service.EventHandlers.Commands;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Identity.Api.Extensions
 {
@@ -37,8 +38,8 @@ namespace Identity.Api.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>();
-            services.AddTransient<IUserQueryService, UserQueryService>();
-            services.AddSingleton<IUserAuthManager, UserAuthManager>();
+            services.AddScoped<IUserQueryService, UserQueryService>();
+            services.AddScoped<IUserAuthManager, UserAuthManager>();
 
             services.AddScoped<ICaptchaManager, CaptchaManager>();
             services.AddScoped<IEmailSenderManager, EmailSenderManager>();

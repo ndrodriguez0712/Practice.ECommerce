@@ -15,6 +15,12 @@ namespace Identity.Service.EventHandlers.Commands
         [Required]
         public string Password { get; set; }
         [Required]
+        public string Phone { get; set; }
+        [Required]
+        public string Question { get; set; }
+        [Required]
+        public string Answer { get; set; }
+        [Required]
         public string TokenCaptcha { get; set; }
     }
 }

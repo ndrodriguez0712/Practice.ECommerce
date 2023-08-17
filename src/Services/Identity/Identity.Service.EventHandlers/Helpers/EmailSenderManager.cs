@@ -28,19 +28,26 @@ namespace Identity.Service.EventHandlers.Helpers
 
         public async Task SendUserCreatedEmailAsync(string userEmail, string userCompleteName)
         {
-            var encryptedText = _encryptionService.Encrypt(userEmail.Trim(), _configuration["EncryptionKey"]);
-            var encodedEncryptedText = HttpUtility.UrlEncode(encryptedText);
-
-            var email = new EmailRequestDto()
+            try
             {
-                Email = userEmail,
-                DestinyName = userCompleteName,
-                Title = "Practice ECommerce account confirmation",
-                Body = encodedEncryptedText,
-                SchemeName = "VerificationEmail.html"
-            };
+                var encryptedText = _encryptionService.Encrypt(userEmail.Trim(), _configuration["EncryptionKey"]);
+                var encodedEncryptedText = HttpUtility.UrlEncode(encryptedText);
 
-            await MandarEmailAsync(email);
+                var email = new EmailRequestDto()
+                {
+                    Email = userEmail,
+                    DestinyName = userCompleteName,
+                    Title = "Practice ECommerce Account Confirmation",
+                    Body = encodedEncryptedText,
+                    SchemeName = "VerificationEmail.html"
+                };
+
+                await MandarEmailAsync(email);
+            }
+            catch(Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         #region Metodos Privados
@@ -81,7 +88,7 @@ namespace Identity.Service.EventHandlers.Helpers
             using var client = new SmtpClient();
             client.CheckCertificateRevocation = false;
             await client.ConnectAsync(_smtpConfigurationDto.Server, _smtpConfigurationDto.Port, MailKit.Security.SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(_smtpConfigurationDto.Email, _smtpConfigurationDto.From);
+            await client.AuthenticateAsync(_smtpConfigurationDto.Email, _smtpConfigurationDto.Password);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }

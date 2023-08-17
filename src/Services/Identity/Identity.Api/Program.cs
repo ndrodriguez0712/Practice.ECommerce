@@ -27,20 +27,6 @@ builder.Services.AddDbContexts(configuration);
 builder.Services.AddServices();
 builder.Services.AddSwagger($"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
 
-//builder.Services.AddDbContext<ApplicationDbContext>(opts =>
-//    opts.UseSqlServer(
-//        config.GetConnectionString("DefaultConnection"),
-//        x => x.MigrationsHistoryTable("__EFMigrationsHistory", "User")
-//  )
-//);
-
-//builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserCreateCommand>());
-//builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblyContaining<UserLoginCommand>());
-
-//builder.Services.AddScoped<IUnitOfWork<ApplicationDbContext>, UnitOfWork<ApplicationDbContext>>();
-//builder.Services.AddTransient<IUserQueryService, UserQueryService>();
-//builder.Services.AddSingleton<IUserAuthManager, UserAuthManager>();
-
 // Health Checks Configurations.
 builder.Services.AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())

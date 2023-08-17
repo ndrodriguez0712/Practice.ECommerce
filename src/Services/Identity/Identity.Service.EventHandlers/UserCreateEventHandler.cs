@@ -33,7 +33,7 @@ namespace Identity.Service.EventHandlers
 
             try
             {
-                await _captchaManager.IsValid(notification.TokenCaptcha);
+                //await _captchaManager.IsValid(notification.TokenCaptcha);
 
                 var userDb = await _userAuthManager.GetUserAsync(notification.Email);
 
@@ -50,7 +50,8 @@ namespace Identity.Service.EventHandlers
                 user.EmailVerification = false;
 
                 await _userAuthManager.CreateUserAsync(user);
-                await _emailSenderManager.SendUserCreatedEmailAsync(user.Email, $"{user.FirstName} {user.LastName}");
+
+                _emailSenderManager.SendUserCreatedEmailAsync(user.Email, $"{user.FirstName} {user.LastName}");
 
                 result.Succeeded = true;
 
@@ -58,7 +59,6 @@ namespace Identity.Service.EventHandlers
             }
             catch (Exception ex) 
             {
-                result.Succeeded = false;
                 foreach(var error in ex.Data)
                 {
                     result.Errors.Add(new IdentityError {
